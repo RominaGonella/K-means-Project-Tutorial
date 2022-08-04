@@ -15,14 +15,18 @@ df_raw.to_csv('data/raw/datos_originales.csv', index = False)
 # se crea nuevo data frame sólo con columnas de interés
 df = df_raw[['Latitude', 'Longitude', 'MedInc']]
 
+# normalizo las variables
+scaler = MinMaxScaler()
+df_scaled = scaler.fit_transform(df)
+
 # ajusto modelo K-mean al dataset
 clus = KMeans(n_clusters = 6, random_state = 308)
-clus.fit(df)
+clus.fit(df_scaled)
 
 # predicción de todo el dataset
-pred = clus.predict(df)
+pred = clus.predict(df_scaled)
 
-# creo variable cluster
+# creo variable cluster, lo agrego al dataset original
 df['cluster'] = pd.Categorical(pred)
 
 # guardo el dataset con el cluster
